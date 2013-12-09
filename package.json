@@ -1,0 +1,16 @@
+{
+  "name": "rabbit",
+  "version": "0.0.1",
+  "description": "rabbitmq wrapper for tagular",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh//git@stash.redventures.net/tglr/rabbit.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
+}
