@@ -6,7 +6,7 @@ See https://github.com/postwait/node-amqp for details
 
 ## Usage
 	var rabbit = require('rabbit-wrapper');
-	var connection = rabbit('amqp://localhost:5672');
+	var connection = rabbit('amqp://localhost:5672').connect();
 	
 	//publish a message
 	connection.exchange('this.is.my.exchange', {type: 'direct', autoDelete: true})
