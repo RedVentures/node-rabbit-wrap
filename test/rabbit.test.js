@@ -67,10 +67,16 @@ describe('node-amqp wrapper', function () {
 			connection.buffer.stack.length.should.equal(expStack);
 			done();
 		});
-		connection.exchange('dude.this.is.my.test', {autoDelete:true}, function () {
+
+		connection.exchange('this.is.my.test', {autoDelete:true}, function () {
 			expStack = connection.buffer.stack.length;
-			//manually emit an error because why not?
+			
+		})
+		.queue('this.is.my.test.queue', {autoDelete:true})
+		.bindQueue('this.is.my.test', '#', function () {
 			connection.connection.emit('error', new Error('ha ha.'));
-		});
+		})
+		.listen(function () {});
+
 	});
 });
