@@ -2,6 +2,7 @@
 # rabbit-wrapper
 
 because node-amqp is ugly
+See https://github.com/postwait/node-amqp for details
 
 ## Usage
 	var rabbit = require('rabbit-wrapper');
