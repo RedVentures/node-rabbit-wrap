@@ -1,5 +1,5 @@
 {
-  "name": "rabbit",
+  "name": "rabbit-wrapper",
   "version": "0.0.1",
   "description": "rabbitmq wrapper for tagular",
   "private": true,
