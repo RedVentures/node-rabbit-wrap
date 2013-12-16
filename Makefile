@@ -1,4 +1,4 @@
-iREPORTER = spec
+REPORTER = spec
 BASE = .
 
 default: install
