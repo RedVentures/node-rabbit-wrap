@@ -16,11 +16,11 @@ because node-amqp is ugly
 	.queue('this.is.a.queue')
 	//bind queue to routing key
 	.bindQueue('this.is.my.exchange', 'this.is.my.routing.key')
-	.listen({ack: true}, function (msg) {
+	.listen({ack: true}, function (msg, ack) {
 		do.some.stuff.with.my.message(msg);
 		
-		//context is connection
-		this.qu.shift();
+		//ack is a reference to queue.shift in node-amqp
+		ack();	
 	})
 
 ## test
