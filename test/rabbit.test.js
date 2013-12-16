@@ -50,4 +50,27 @@ describe('node-amqp wrapper', function () {
 		connection.exchange('my.test.exchange', {confirm: true})
 			.send('this-is-my-message', {hey: 'there'});
 	});
+
+	it('should handle declaring multiple exchanges in a row', function (done) {
+		connection.exchange('my.test.exchange.again', {autoDelete: true},
+			function () {
+				connection.exchange('some.other.exchange', {autoDelete: true}, function () {
+					done();
+				})
+			}
+		);
+	});
+
+	it('should handle connection errors by re-establishing config', function (done) {
+		var expStack = 0;
+		connection.error(function () {
+			connection.buffer.stack.length.should.equal(expStack);
+			done();
+		});
+		connection.exchange('dude.this.is.my.test', {autoDelete:true}, function () {
+			expStack = connection.buffer.stack.length;
+			//manually emit an error because why not?
+			connection.connection.emit('error', new Error('ha ha.'));
+		});
+	});
 });
