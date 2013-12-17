@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh//git@stash.redventures.net/tglr/rabbit.git"
+    "url": "git://github.com/tagular/node-rabbit-wrap.git"
   },
   "dependencies": {
     "amqp": "~0.1.8"
