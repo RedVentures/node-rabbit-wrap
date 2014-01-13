@@ -61,6 +61,22 @@ describe('node-amqp wrapper', function () {
 		);
 	});
 
+	it('should be able to publish to two different exchanges from the same connection', function (done) {
+		var ex1 = connection.exchange('this.is.yet.another.test.exchange', {autoDelete: true, confirm: true})
+			.send('hey.there.a.message', {yep: 'no way'}, function (err) {
+				if (err) {
+					throw new Error('Failed publishing to exchange!');
+				}
+			})
+
+		var ex2 = connection.exchange('this.is.totally.different.yep', {autoDelete: true, confirm: true})
+			.send('hey.there.this.is.something.else', {yes: 'it is'}, function (err) {
+				done();
+			});
+
+		ex1.should.not.be.exactly(ex2);
+	});	
+
 	it('should handle connection errors by re-establishing config', function (done) {
 		var expStack = 0;
 		connection.error(function () {
