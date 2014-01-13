@@ -3,7 +3,7 @@ var Rabbit = require('../lib/connection');
 describe('node-amqp wrapper', function () {
 	var connection;
 	beforeEach(function () {
-		connection = new Rabbit('amqp://localhost:5672');
+		connection = Rabbit('amqp://localhost:5672');
 		connection.connect();
 	});
 
@@ -64,12 +64,12 @@ describe('node-amqp wrapper', function () {
 	it('should handle connection errors by re-establishing config', function (done) {
 		var expStack = 0;
 		connection.error(function () {
-			connection.buffer.stack.length.should.equal(expStack);
+			connection.stack.length.should.equal(expStack);
 			done();
 		});
 
 		connection.exchange('this.is.my.test', {autoDelete:true}, function () {
-			expStack = connection.buffer.stack.length;
+			expStack = connection.stack.length;
 			
 		})
 		.queue('this.is.my.test.queue', {autoDelete:true})
