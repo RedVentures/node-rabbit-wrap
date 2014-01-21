@@ -4,6 +4,12 @@
 because node-amqp is ugly
 See https://github.com/postwait/node-amqp for details
 
+## Installation
+
+To install in your project, run the following command:
+	
+	npm install --save git://github.com/tagular/node-rabbit-wrap.git
+	
 ## Usage
 	var rabbit = require('rabbit-wrapper');
 	var connection = rabbit('amqp://localhost:5672').connect();
