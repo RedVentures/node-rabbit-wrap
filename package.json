@@ -12,7 +12,7 @@
     "url": "git://github.com/tagular/node-rabbit-wrap.git"
   },
   "dependencies": {
-    "amqp": "~0.1.8"
+    "amqp": "~0.2.0"
   },
   "devDependencies": {
     "should": "~2.0.2",
