@@ -29,6 +29,42 @@ describe('rabbit-wrapper.channel', function () {
                 done(err);
             });
         });
+
+        //Moving this behavior to the queue, because listeners are the only user-provided fn
+        /*it('should not vomit out listener errors', function (done) {
+            ch.on('error', onErr);
+            ch.once('ready', function () {
+                ch.ch.on('error', function () {
+                    return done(new Error('Underyling channel error called!!!'));
+                });
+            });
+            ch.call('assertQueue', ['another.queue', {exclusive: true, durable: false, autoDelete: true}])
+                .then(success, fail);
+            ch.call('bindQueue', ['another.queue', 'test.my.exchange', 'routing.key'])
+                .then(function () {
+                    console.log('bound');
+                    ch.call('consume', ['another.queue', listen, {}]).then(function () {
+                        'use strict';
+                        var content = JSON.stringify('hey');
+                        ch.call('publish', ['test.my.exchange', 'routing.key', new Buffer(content), {persistent: true}]).then(function () {
+                        }, done);
+                    }, done);
+                }, done);
+
+
+
+            function listen(msg) {
+                console.log('hi!!!')
+                console.log(msg.content.toString('utf8'));
+                noway.dude = 'hi';
+                console.log('did not make it');
+            }
+            function onErr(err) {
+                //got us an err
+                console.log('got us an err')
+                return done(err);
+            }
+        });*/
     });
 
     describe('#fixture', function() {
@@ -76,3 +112,8 @@ describe('rabbit-wrapper.channel', function () {
         });
     });
 });
+
+function nop() {}
+
+function success() { console.log('success'); }
+function fail() { console.error('fail'); }
