@@ -1,8 +1,10 @@
 
 # rabbit-wrapper
 
-because node-amqp is ugly
-See https://github.com/postwait/node-amqp for details
+This is a wrapper for [amqp.node](https://github.com/squaremo/amqp.node) with support for [node-amqp](https://github.com/postwait/node-amqp) API options.
+
+See [https://github.com/postwait/node-amqp](https://github.com/postwait/node-amqp) for details.  
+See also [http://www.squaremobius.net/amqp.node/doc/channel_api.html](http://www.squaremobius.net/amqp.node/doc/channel_api.html)
 
 ## Installation
 
@@ -29,6 +31,14 @@ To install in your project, run the following command:
 		//ack is a reference to queue.shift in node-amqp
 		ack();	
 	})
+
+## todos
+The remaining todo list before merging with `master`...  
+
+* need to have more testing!
+	* need to test reconnection logic
+	* need to test producer blocking
+
 
 ## test
 
