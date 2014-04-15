@@ -33,9 +33,9 @@ describe('queue wrapper', function () {
         it('should listen to and receive messages from rabbit', function (done) {
             var qu = getNewQueue(conn);
             qu.bindQueue('my.queue.listener.exchange', 'queue.test.key', function () {
-                console.log(chan.publish('my.queue.listener.exchange', 'queue.test.key', new Buffer('{"name": "Bob"}'), 
+               chan.publish('my.queue.listener.exchange', 'queue.test.key', new Buffer('{"name": "Bob"}'), 
                     {contentType: 'application/json'}
-                ));//.then(function () { console.log('published!'); }, console.error);
+                );//.then(function () { console.log('published!'); }, console.error);
             });
             qu.listen({}, function (msg, ack, headers, info, m) {
                 ack();
