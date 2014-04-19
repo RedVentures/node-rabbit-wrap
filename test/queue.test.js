@@ -60,6 +60,30 @@ describe('queue wrapper', function () {
             qu.ignore(done);
         });
     });
+
+    describe('#ack', function () {
+        var qu;
+
+        before(function (done) {
+            var ex = conn.exchange('another.test.exchange', {type: 'direct', autoDelete: true, durable: false});
+            qu = conn.queue('my.unit.test.queue.#ack', {autoDelete: true, durable: false})
+                .bindQueue('another.test.exchange', 'my.key', function () {
+                    ex.send('my.key', {"a": "msg"}, {deliveryMode: 2}, done);
+                });
+        });
+
+        it('should prevent acks on non-acking consumers', function (done) {
+            qu.listen({ack: false}, function (msg, ack) {
+                try {
+                    msg.should.eql({"a": "msg"});
+                    ack().should.be.nok;
+                    done();
+                } catch (e) {
+                    return done(e);
+                }
+            });
+        });
+    });
 });
 
 function getNewQueue(conn, cb) {
