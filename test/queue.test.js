@@ -1,12 +1,14 @@
 var Connection = require('../lib/connection');
 var Queue = require('../lib/queue');
 var when = require('when');
+Error.stackTraceLimit = 40;
 describe('queue wrapper', function () {
     var conn;
     var queue;
 
-    before(function () {
+    beforeEach(function () {
         conn = new Connection('amqp://localhost:5672').connect();
+        conn.on('error', console.error);
     });
 
     describe('#declare', function () {
@@ -35,18 +37,31 @@ describe('queue wrapper', function () {
             qu.bindQueue('my.queue.listener.exchange', 'queue.test.key', function () {
                chan.publish('my.queue.listener.exchange', 'queue.test.key', new Buffer('{"name": "Bob"}'), 
                     {contentType: 'application/json'}
-                );//.then(function () { console.log('published!'); }, console.error);
+                );
             });
-            qu.listen({}, function (msg, ack, headers, info, m) {
-                ack();
-                done();
+            qu.listen({ack: true}, function (msg, ack, headers, info, m) {
+                ack(true);
+                setImmediate(done);
             });
             
         });
 
     });
+
+    describe('#ignore', function () {
+        var qu;
+
+        before(function (done) {
+            qu = conn.queue('my.unit.test.queue.2', {autoDelete: true, durable: false})
+               .listen({ack: false}, function () {}, done);
+        });
+
+        it('should stop listening to a queue', function (done) {
+            qu.ignore(done);
+        });
+    });
 });
 
 function getNewQueue(conn, cb) {
-    return conn.queue('my.unit.test.queue', {autoDelete: true, durable: false}, cb);
+    return conn.queue('my.unit.test.queue', {autoDelete: true, durable: false}, cb || function () {});
 }
