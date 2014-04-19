@@ -41,7 +41,7 @@ describe('queue wrapper', function () {
             });
             qu.listen({ack: true}, function (msg, ack, headers, info, m) {
                 ack(true);
-                setImmediate(done);
+                process.nextTick(done);
             });
             
         });
