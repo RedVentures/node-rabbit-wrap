@@ -1,5 +1,6 @@
 
 # rabbit-wrapper
+[![Build Status](https://travis-ci.org/tagular/node-rabbit-wrap.svg?branch=master)](https://travis-ci.org/tagular/node-rabbit-wrap)
 
 This is a wrapper for [amqp.node](https://github.com/squaremo/amqp.node) with support for [node-amqp](https://github.com/postwait/node-amqp) API options.
 
