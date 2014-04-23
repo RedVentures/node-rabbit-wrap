@@ -1,6 +1,6 @@
 {
   "name": "rabbit-wrapper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "rabbitmq wrapper for tagular",
   "private": true,
   "main": "index.js",
