@@ -38,7 +38,7 @@ describe('ChannelSurfer', function () {
 
       surfer.call('assertQueue', ['my.test.queue', {autoDelete: false, durable: true}], 
         false, function (err) {
-        
+        //ignore this error; it's expected
       });
     });
   });
