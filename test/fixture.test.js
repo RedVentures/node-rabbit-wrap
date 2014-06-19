@@ -102,17 +102,19 @@ describe('Fixture', function () {
       });
     });
 
-    it('should optionally limit replacements', function (done) {
+    it('should filter stuff with a filter function', function (done) {
       fix.add('setName', 'obj', ['dude', 'bro']);
       fix.add('setName', 'obj', ['not', 'called']);
-      fix.remove('setName', 'obj', 1);
+      fix.remove('setName', 'obj', function (args) {
+        return args[0] === 'dude' && args[1] === 'bro';
+      });
 
       fix.run().then(function () {
         try {
           (!!obj.firstName).should.be.ok;
           (!!obj.lastName).should.be.ok;
-          obj.firstName.should.eql('dude');
-          obj.lastName.should.eql('bro');
+          obj.firstName.should.eql('not');
+          obj.lastName.should.eql('called');
           done();
         } catch (e) {
           return done(e);
