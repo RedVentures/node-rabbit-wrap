@@ -102,7 +102,7 @@ describe('Fixture', function () {
       });
     });
 
-    it('should filter stuff with a filter function', function (done) {
+    it('should filter arguments with an optional function', function (done) {
       fix.add('setName', 'obj', ['dude', 'bro']);
       fix.add('setName', 'obj', ['not', 'called']);
       fix.remove('setName', 'obj', function (args) {
@@ -120,7 +120,7 @@ describe('Fixture', function () {
           return done(e);
         }
       });
-
     });
+
   });
 });
