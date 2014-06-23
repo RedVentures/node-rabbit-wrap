@@ -79,6 +79,36 @@ Returns a new `Queue` object.
 * `autoDelete` (default `false`) [`Boolean`]) – whether rabbit will destroy the queue after its number of consumers reaches zero
 * `arguments` [`Object`] – additional arguments (e.g. `x-expired`) that are specific to rabbitmq
 
+
+### Queue.bindQueue(exchange, binding[, cb])
+Binds a queue to the given exchange, with the routing key specified in the `binding` param
+
+### Queue.listen([options, ] listener[, cb])
+Adds a consumer for the queue. The `listener` argument is the function that will be called on new messages. The `cb` param is an optional callback that will run after the underlying `consume` operation has completed.
+
+#### options
+* `ack` [`Boolean`] – Sets whether your listener must `ack` or `nack` message
+* `consumerTag` [`String`] – Sets a custom consumer tag, which can be helpful for identifying consumers in rabbitMQ's management API
+* priority` [`Number`* – Higher priority consumers will receive messages before lower priority consumers
+*  `arguments` [`Object` – Arbitrary arguments (see rabbitmq documentation for any ])
+
+#### listener
+This parameter must be a function, and it will be given four parameters.
+
+```js
+queue.listen({ack: true}, function (msg, ack, headers, fields) {
+	/* do stuff! */
+})
+```
+
+* `msg` [`Object`, `Buffer`] – If the content type of the message is `application/json`, this will be the decoded JSON message as whatever type it should be. If the content type is anything else, this will be a `Buffer` that you can use for whatever purpose necessary
+* `ack` [`Function`] 
+	* `ack()` – acknowledges message
+	* `ack(false)` – rejects message
+	* `ack(false, true)` – rejects and requeues message
+* `headers` [`Object`] – Message headers
+* `fields` [`Object`] – Message fields, which have protocol info like the deliveryTag, exchange, and routing key
+
 For more options, see the [amqp.node api docs](http://www.squaremobius.net/amqp.node/doc/channel_api.html).
 
 ## test
