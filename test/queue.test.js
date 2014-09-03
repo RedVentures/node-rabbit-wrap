@@ -1,14 +1,17 @@
 var Connection = require('../lib/connection');
-var Queue = require('../lib/queue');
-var when = require('when');
 Error.stackTraceLimit = 40;
 describe('queue wrapper', function () {
     var conn;
-    var queue;
 
     beforeEach(function () {
         conn = new Connection('amqp://localhost:5672').connect();
         conn.on('error', console.error);
+    });
+
+    describe('new queue callback', function () {
+        it('should fire when creating a queue', function (done) {
+            getNewQueue(conn, done);
+        });
     });
 
     describe('#declare', function () {
@@ -35,7 +38,7 @@ describe('queue wrapper', function () {
         it('should listen to and receive messages from rabbit', function (done) {
             var qu = getNewQueue(conn);
             qu.bindQueue('my.queue.listener.exchange', 'queue.test.key', function () {
-               chan.publish('my.queue.listener.exchange', 'queue.test.key', new Buffer('{"name": "Bob"}'), 
+               chan.publish('my.queue.listener.exchange', 'queue.test.key', new Buffer('{"name": "Bob"}'),
                     {contentType: 'application/json'}
                 );
             });
@@ -43,7 +46,7 @@ describe('queue wrapper', function () {
                 ack(true);
                 process.nextTick(done);
             });
-            
+
         });
 
     });
@@ -82,6 +85,18 @@ describe('queue wrapper', function () {
                     return done(e);
                 }
             });
+        });
+    });
+
+    describe('#destroy', function () {
+        var queue;
+
+        beforeEach(function (done) {
+            queue = getNewQueue(conn, done);
+        });
+
+        it('should fire the callback when completed', function (done) {
+            queue.destroy({}, done);
         });
     });
 });

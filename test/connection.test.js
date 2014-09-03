@@ -15,17 +15,17 @@ describe('node-amqp wrapper', function () {
 					done();
 					conn.close();
 				});
-			});			
+			});
 		});
-		
+
 		describe('#close', function () {
 			var conn = new Rabbit('amqp://localhost:5672');
-			it('should disconnect', function (done) {
+			it('should disconnect and fire the callback', function (done) {
 				conn.connect(function () {
 					conn.close(done);
 				});
 			});
 		});
 	});
-	
+
 });

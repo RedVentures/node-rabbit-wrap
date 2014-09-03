@@ -9,11 +9,10 @@ describe('ChannelSurfer', function () {
 
     before(function (done) {
       conn.connect(function () {
-        console.log('connection is open');
-        conn.openChannel(); 
+        conn.openChannel();
         surfer = new ChannelSurfer(conn);
-        
-        surfer.call('assertQueue', 
+
+        surfer.call('assertQueue',
           args,
           true,
           done
@@ -36,8 +35,9 @@ describe('ChannelSurfer', function () {
 
       //surfer.channel.emit('error');
 
-      surfer.call('assertQueue', ['my.test.queue', {autoDelete: false, durable: true}], 
+      surfer.call('assertQueue', ['my.test.queue', {autoDelete: false, durable: true}],
         false, function (err) {
+          err.should.be.an.instanceOf(Error);
         //ignore this error; it's expected
       });
     });
