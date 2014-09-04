@@ -98,6 +98,23 @@ describe('queue wrapper', function () {
         it('should fire the callback when completed', function (done) {
             queue.destroy({}, done);
         });
+
+        it('should work properly when conn.close follows a destroy with multiple listeners', function (done) {
+            queue.listen({}, function () {});
+            queue.listen({}, function () {});
+            queue.listen({}, function () {});
+            queue.listen({}, function () {});
+
+            queue.listen({}, function () {}, function (err, tag) {
+                if (err) return done(err);
+
+                tag.length.should.be.greaterThan(1);
+
+                queue.destroy({}, function () {
+                    conn.close(done);
+                });
+            });
+        });
     });
 });
 
