@@ -99,7 +99,7 @@ describe('queue wrapper', function () {
             queue.destroy({}, done);
         });
 
-        it.only('should work properly when conn.close follows a destroy with multiple listeners', function (done) {
+        it('should work properly when conn.close follows a destroy with multiple listeners', function (done) {
             queue.listen({}, function () {});
             queue.listen({}, function () {});
             queue.listen({}, function () {});
