@@ -1,5 +1,4 @@
 var Connection = require('../lib/connection');
-var Exchange = require('../lib/exchange');
 var amqp = require('amqplib');
 var when = require('when');
 describe('exchange', function () {
@@ -9,11 +8,17 @@ describe('exchange', function () {
         conn = new Connection('amqp://localhost:5672').connect();
     });
 
+    after(function (done) {
+        var myExchange = getNewExchange(conn, function () {
+            myExchange.destroy({}, done);
+        });
+    });
+
     describe('#declare', function () {
 
         it('should declare and open an exchange', function (done) {
             getNewExchange(conn, done);
-        }); 
+        });
     });
 
     describe('#send', function () {
@@ -37,9 +42,9 @@ describe('exchange', function () {
                             ch.bindQueue('this.is.a.queue', 'my.unit.test.exchange', 'this.is.a.key'),
                         ]).then(function () {
                             done();
-                        }, done)
-                    
-                    }, done)
+                        }, done);
+
+                    }, done);
                 }, done);
         });
 
@@ -51,6 +56,14 @@ describe('exchange', function () {
                     done();
                 });
                 ch.publish('my.other.test.exchange', 'this.is.a.key', new Buffer('{"name": "Dude"}'));
+            });
+        });
+    });
+
+    describe('#destroy', function () {
+        it('should fire the callback when included', function (done) {
+            var myExchange = getNewExchange(conn, function () {
+                myExchange.destroy({}, done);
             });
         });
     });
