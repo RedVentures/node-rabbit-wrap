@@ -31,13 +31,15 @@ describe('exchange', function () {
 
     describe('#bindExchange', function () {
         var ch;
+        var rConn;
         before(function (done) {
             amqp.connect('amqp://localhost:5672')
                 .then(function (conn) {
+                    rConn = conn;
                     conn.createChannel().then(function (chan) {
                         ch = chan;
                         when.all([
-                            ch.assertExchange('my.other.test.exchange', 'direct', {autoDelete: true, durable: false}),
+                            ch.assertExchange('my.other.test.exchange', 'direct', {autoDelete: false, durable: false}),
                             ch.assertQueue('this.is.a.queue', {autoDelete: true, durable: false, noAck: true}),
                             ch.bindQueue('this.is.a.queue', 'my.unit.test.exchange', 'this.is.a.key'),
                         ]).then(function () {
@@ -46,6 +48,10 @@ describe('exchange', function () {
 
                     }, done);
                 }, done);
+        });
+
+        after(function (done) {
+            rConn.close().then(done, done);
         });
 
         it('should bind an exchange to another exchange', function (done) {
@@ -57,6 +63,63 @@ describe('exchange', function () {
                 });
                 ch.publish('my.other.test.exchange', 'this.is.a.key', new Buffer('{"name": "Dude"}'));
             });
+        });
+    });
+    
+    describe('#unbindExchange', function () {
+        var ex;
+        var ch;
+        var rConn;
+        before(function (done) {
+            ex = getNewExchange(conn, function () {
+                amqp.connect('amqp://localhost:5672')
+                    .then(function (conn) {
+                        rConn = conn;
+                        conn.createChannel().then(function (chan) {
+                            ch = chan;
+                            when.all([
+                                ch.assertExchange('my.other.test.exchange', 'direct', {autoDelete: false, durable: false}),
+                                ch.assertQueue('this.is.a.queue', {autoDelete: true, durable: false, noAck: true}),
+                                ch.bindQueue('this.is.a.queue', 'my.unit.test.exchange', 'this.is.a.key'),
+                            ]).then(function () {
+                                ex.bindExchange('my.other.test.exchange', 'this.is.a.key', done);
+                            }, done);
+
+                        }, done);
+                    }, done);
+            });
+        });
+
+        after(function (done) {
+            rConn.close().then(done, done);
+        });
+
+        it('should unbind exchanges', function (done) {
+            //this.timeout(50000);
+            ch.consume('this.is.a.queue', 
+                function (data) {
+                    return done(new Error('Should not receive message from unbound exchange!'));
+                }
+            )
+            .then(function () {
+                    ex.unbindExchange('my.other.test.exchange', 'this.is.a.key', function (err) {
+                        if (err) { 
+                            return done(err);
+                        }
+                        
+                        
+                        var res = ch.publish('my.other.test.exchange',
+                            'this.is.a.key', 
+                            new Buffer('{"sup": "hello"}')
+                        );
+
+
+                        //call done later to give the publish and consume time to happen
+                        setTimeout(function () {
+                            done(res ? null : new Error('failed publishing'));    
+                        }, 100);                    
+                    });
+                }, done);        
         });
     });
 

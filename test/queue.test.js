@@ -116,6 +116,54 @@ describe('queue wrapper', function () {
             });
         });
     });
+
+    describe('#unbindQueue', function () {
+        var queue;
+
+        beforeEach(function (done) {
+            queue = getNewQueue(conn, function () {
+                queue.conn.exchange('another.test.exchange', {
+                    type: 'direct', autoDelete: true, durable: false
+                });
+
+                queue.bindQueue('another.test.exchange', 'some.key', function () {
+                    queue.bindQueue('another.test.exchange', 'another.key', done);
+                });
+            });
+        });
+
+        afterEach(function (done) {
+            queue.destroy(done);
+        });
+
+        it('should unbind a queue from an exchange', function (done) {
+            queue.unbindQueue('another.test.exchange', 'some.key', done);
+        });
+
+        it('should only unbind the requested key', function (done) {
+            queue.unbindQueue('another.test.exchange', 'some.key', function () {
+                try {
+                    queue.fixture.calls.should.containEql(
+                        { 
+                            f: 'call', 
+                            dep: 'ch', 
+                            args: [
+                                'bindQueue', 
+                                [
+                                    'my.unit.test.queue',
+                                    'another.test.exchange',
+                                    'another.key'
+                                ]
+                            ]
+                        }
+                    );
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+    })
 });
 
 function getNewQueue(conn, cb) {
