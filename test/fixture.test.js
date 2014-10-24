@@ -83,7 +83,6 @@ describe('Fixture', function () {
       fix.remove('setName', 'obj');
       fix.calls.should.eql(
         [
-          null,
           {f: 'getName', dep: 'obj', args: []}
         ]
       );
