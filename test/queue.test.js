@@ -45,7 +45,7 @@ describe('queue wrapper', function() {
         });
       });
       qu.listen({
-        ack: true
+        noAck: false
       }, function(msg, ack, headers, info, m) {
         ack(true);
         process.nextTick(done);
@@ -64,7 +64,7 @@ describe('queue wrapper', function() {
           durable: false
         })
         .listen({
-          ack: false
+          noAck: true
         }, function() {}, done);
     });
 
@@ -75,7 +75,7 @@ describe('queue wrapper', function() {
     it('should ignore multiple consumers', function(done) {
       qu.fixture.calls.length.should.eql(2);
       qu.listen({
-        ack: false
+        noAck: true
       }, function yerp() {}, function() {
         try {
           qu.fixture.calls.length.should.eql(3);
@@ -97,7 +97,7 @@ describe('queue wrapper', function() {
     });
 
     it('should ignore specific consumers in a set', function (done) {
-      qu.listen({ack: false}, yerp, 
+      qu.listen({noAck: true}, yerp, 
         function () {
           try {
             qu.fixture.calls.length.should.eql(3);
@@ -148,7 +148,7 @@ describe('queue wrapper', function() {
 
     it('should prevent acks on non-acking consumers', function(done) {
       qu.listen({
-        ack: false
+        noAck: true
       }, function(msg, ack) {
         try {
           msg.should.eql({
