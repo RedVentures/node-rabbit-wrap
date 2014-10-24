@@ -95,6 +95,33 @@ describe('queue wrapper', function() {
         }
       });
     });
+
+    it('should ignore specific consumers in a set', function (done) {
+      qu.listen({ack: false}, yerp, 
+        function () {
+          try {
+            qu.fixture.calls.length.should.eql(3);
+
+            qu.ignore(yerp, function (err) {
+              if (err) {
+                return done();
+              }
+
+              try {
+                qu.fixture.calls.length.should.eql(2);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            });
+          } catch (e) {
+            done(e);
+          }
+        }
+      );
+
+      function yerp() {}
+    });
   });
 
   describe('#ack', function() {
